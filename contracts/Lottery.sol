@@ -18,6 +18,7 @@ contract Lottery {
     }
     
     function pickWinner() public restricted {
+        require(players.length > 0, "There are no players in the lottery");
         uint index = random() % players.length;
         players[index].transfer(this.balance);
         players = new address[](0);

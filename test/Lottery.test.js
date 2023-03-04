@@ -70,6 +70,31 @@ describe('Lottery Contract', () => {
         }
     });
 
-    it()
+    it('only manager can call pickWinner', async () => {
+        // First, enter some players into the lottery
+        try {
+            await lottery.methods.enter().send({
+                from: accounts[0],
+                value: web3.utils.toWei('0.02', 'ether')
+            });
+            await lottery.methods.enter().send({
+                from: accounts[1],
+                value: web3.utils.toWei('0.02', 'ether')
+            });
 
+            // Now, try to call pickWinner() using a non-manager account
+            await lottery.methods.pickWinner().send({
+                from: accounts[2]
+            });
+            assert(false, 'Expected an error to be thrown');
+        } catch (err) {
+            console.log(err.message);
+            assert(err);
+        }
+
+        // Finally, check that pickWinner() can still be called successfully using the manager account
+        await lottery.methods.pickWinner().send({
+            from: accounts[0]
+        });
+    });
 });
